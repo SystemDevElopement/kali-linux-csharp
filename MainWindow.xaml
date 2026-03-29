@@ -1,0 +1,93 @@
+<Window x:Class="KaliLinuxUI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Kali Linux UI"
+        Height="900" Width="1400"
+        WindowStartupLocation="CenterScreen"
+        Background="#0D0D0D"
+        WindowStyle="None"
+        AllowsTransparency="False"
+        ResizeMode="CanResizeWithGrip">
+
+    <Window.Resources>
+        <!-- Brushes congelados = mejor perf -->
+        <SolidColorBrush x:Key="KaliGreen" Color="#00FF41" Freeze="True"/>
+        <SolidColorBrush x:Key="KaliDark" Color="#1A1A1A" Freeze="True"/>
+
+        <!-- Botón optimizado -->
+        <Style x:Key="KaliButton" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource KaliDark}"/>
+            <Setter Property="Foreground" Value="{StaticResource KaliGreen}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource KaliGreen}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontFamily" Value="Consolas"/>
+        </Style>
+
+        <!-- Virtualización DataGrid -->
+        <Style TargetType="DataGrid">
+            <Setter Property="EnableRowVirtualization" Value="True"/>
+            <Setter Property="EnableColumnVirtualization" Value="True"/>
+            <Setter Property="VirtualizingPanel.IsVirtualizing" Value="True"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="True"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Title -->
+        <Grid Background="{StaticResource KaliDark}" MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+            <TextBlock Text="root@kali" Foreground="{StaticResource KaliGreen}"
+                       VerticalAlignment="Center" Margin="10"/>
+        </Grid>
+
+        <!-- Content -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Sidebar simplificado -->
+            <StackPanel Background="#0F0F0F">
+                <Button Content="> nmap" Style="{StaticResource KaliButton}" Click="Tool_Click"/>
+                <Button Content="> nikto" Style="{StaticResource KaliButton}" Click="Tool_Click"/>
+                <Button Content="> metasploit" Style="{StaticResource KaliButton}" Click="Tool_Click"/>
+            </StackPanel>
+
+            <!-- Main -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="250"/>
+                </Grid.RowDefinitions>
+
+                <!-- DataGrid bind real -->
+                <DataGrid ItemsSource="{Binding Operations}"
+                          AutoGenerateColumns="False"
+                          Background="#1A1A1A"
+                          IsReadOnly="True">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Time}" Width="100"/>
+                        <DataGridTextColumn Binding="{Binding Tool}" Width="150"/>
+                        <DataGridTextColumn Binding="{Binding Status}" Width="*"/>
+                    </DataGrid.Columns>
+                </DataGrid>
+
+                <!-- Terminal optimizado -->
+                <TextBox Grid.Row="1"
+                         x:Name="TerminalOutput"
+                         Background="#0F0F0F"
+                         Foreground="#00FF41"
+                         FontFamily="Consolas"
+                         IsReadOnly="True"
+                         TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto"/>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
